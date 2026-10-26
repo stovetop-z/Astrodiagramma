@@ -1,0 +1,41 @@
+local constants = {}
+
+constants.G = 6.6743e-11 -- m3 / (kg s2) Gravitational constant
+constants.N_A6 = 02214076e+23 -- 1 / (mol) Avogadro’s number
+constants.R = 8.31446262 -- J / (K mol) Gas constant
+constants.Ryd = 10973731.6 -- 1 / (m) Rydberg constant
+constants.a0 = 5.29177211e-11 -- m Bohr radius
+constants.alpha = 0.00729735256 -- Fine-structure constant
+constants.atm = 101325 -- Pa Standard atmosphere
+constants.b_wien = 0.00289777196 -- m K Wien wavelength displacement law constant
+constants.c = 299792458 -- m / (s) Speed of light in vacuum
+constants.e = 1.60217663e-19 -- C Electron charge
+constants.eps0 = 8.85418782e-12 -- F/m Vacuum electric permittivity
+constants.g0 = 9.80665 -- m / s2 Standard acceleration of gravity
+constants.h = 6.62607015e-34 -- J s Planck constant
+constants.hbar = 1.05457182e-34 -- J s Reduced Planck constant
+constants.k_B = 1.380649e-23 -- J / (K) Boltzmann constant
+constants.m_e = 9.10938371e-31 -- kg Electron mass 
+constants.m_n = 1.6749275e-27 -- kg Neutron mass
+constants.m_p = 1.67262193e-27 -- kg Proton mass
+constants.mu0 = 1.25663706e-06 -- N/A2 Vacuum magnetic permeability
+constants.muB = 9.27401007e-24 -- J/T Bohr magneton
+constants.sigma_T = 6.65245871e-29 -- m2 Thomson scattering cross-section
+constants.sigma_sb = 5.67037442e-08 -- W / (K4 m2) Stefan-Boltzmann constant
+constants.u = 1.66053907e-27 -- kg Atomic mass
+constants.GM_earth = 3.986004e+14 -- m3 / (s2) Nominal Earth mass parameter
+constants.GM_jup = 1.2668653e+17 -- m3 / (s2) Nominal Jupiter mass parameter
+constants.GM_sun = 1.3271244e+20 -- m3 / (s2) Nominal solar mass parameter
+constants.L_bol0 = 3.0128e+28 -- W Luminosity for absolute bolometric magnitude 0
+constants.L_sun = 3.828e+26 -- W Nominal solar luminosity
+constants.M_earth = 5.97216787e+24 -- kg Earth mass
+constants.M_jup = 1.8981246e+27 -- kg Jupiter mass
+constants.M_sun = 1.98840987e+30 -- kg Solar mass
+constants.R_earth = 6378100 -- m Nominal Earth equatorial radius
+constants.R_jup = 71492000 -- m Nominal Jupiter equatorial radius
+constants.R_sun = 695700000 -- m Nominal solar radius
+constants.au = 1.49597871e+11 -- m Astronomical Unit
+constants.kpc = 3.08567758e+19 -- m Kiloparsec
+constants.pc = 3.08567758e+16 -- m Parsec
+
+return constants
