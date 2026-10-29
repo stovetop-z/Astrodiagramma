@@ -17,38 +17,38 @@ local db = gaiadb:new("database/gaia.db")
 local function landing()
     if user.exists == false then
         user.exists = true
-        print("Let's setup your configurations:\n")
-        print("fovRadius in degrees from zenith: ")
+        print("Let's setup your configurations.")
+        io.write("fovRadius in degrees from zenith: ")
         user.fovRadius = tonumber(io.read())
-        print("Automatically load longitude and latitude? [y/n] ")
+        io.write("Automatically load longitude and latitude? [y/n] ")
         local auto = io.read()
         if auto == "y" or auto == "yes" then
             fov:auto_set_reference_coordinates()
             user.userCoordinates.latitude = fov.latitude
             user.userCoordinates.longitude = fov.longitude
         else 
-            print("Enter latitude: ")
+            io.write("Enter latitude: ")
             user.userCoordinates.latitude = tonumber(io.read())
-            print("Enter longitude: ")
+            io.write("Enter longitude: ")
             user.userCoordinates.longitude = tonumber(io.read())
         end
 
-        print("If you have an offline sqlite3 database to connect to, type in path, otherwise press enter: ")
+        io.write("If you have an offline sqlite3 database to connect to, type in path, otherwise press enter: ")
         local db_path = io.read()
         if #db_path > 1 then
             user.database = db_path
         end
 
-        print("Lastly, how would you like to be called: ")
+        io.write("Lastly, how would you like to be called: ")
         local name = ""
         while true do
             name = io.read()
-            print(name .. " are you sure? [y/n] ")
+            io.write(name .. " are you sure? [y/n] ")
             local ans = io.read()
             if ans == "yes" or ans == "y" then
                 break
             end
-            print("Enter name: ")
+            io.write("Enter name: ")
         end
         user.userName = name
     else 

@@ -1,74 +1,78 @@
 # Astrodiagramma
 
-Astrodiagramma is a small Lua project for astronomy calculations and working with sky coordinates. It also includes scripts to download Gaia DR3 source data and import a CSV result into SQLite.
+Astrodiagramma is a Lua astronomy project with coordinate and unit calculations, an interactive command-line prototype, and utilities for downloading Gaia DR3 data and importing it into SQLite.
 
 ## Requirements
 
-- Lua
-- `curl` for the Gaia downloader
-- `sqlite3` command-line program for CSV import
+- Lua 5.5 (the current development setup)
+- LuaRocks
+- `curl` and `sqlite3` command-line tools for the Gaia data utilities
+- The Lua modules `dkjson`, `luasocket`, and `lsqlite3`
 
-No Lua packages are needed for the download and import scripts. Run commands from the project root so their default input and output paths resolve as shown.
-
-## Download Gaia DR3 data
-
-The downloader selects `source_id`, right ascension (`ra`), declination (`dec`), and Gaia G-band magnitude (`phot_g_mean_mag`) from `gaiadr3.gaia_source`, keeping sources at or below the supplied magnitude limit.
+Install the Lua modules with:
 
 ```sh
-lua astrodiagramma/download_gaia.lua 14.0
+luarocks install dkjson
+luarocks install luasocket
+luarocks install lsqlite3
 ```
 
-This saves a CSV such as `gaia_dr3_gmag_14_0.csv`. Pass a second argument to choose the output path:
+On Apple Silicon Macs using Homebrew SQLite, build `lsqlite3` against Homebrew's library if it loads with a missing SQLite symbol:
 
 ```sh
-lua astrodiagramma/download_gaia.lua 14.0 bright_sources.csv
+luarocks install lsqlite3 SQLITE_DIR=/opt/homebrew/opt/sqlite
 ```
 
-The script submits an asynchronous query to the ESA Gaia Archive, polls until the job completes, and downloads the result. The archive may cap the number of returned rows.
+## Run the application
 
-## Convert a CSV to SQLite
+From the project root:
 
 ```sh
-lua astrodiagramma/csv_to_sqlite.lua bright_sources.csv bright_sources.db
+lua astrodiagramma/astrodiagramma.lua
 ```
 
-The output database contains a `gaia_sources` table with these columns:
+The current application is an interactive prototype. It loads settings from `astrodiagramma/configs/`, prompts for initial user and location settings when `exists` is false, and accepts `q` to quit. Automatic location lookup uses LuaSocket and an IP geolocation service. Configuration and database paths are currently resolved relative to the project root.
 
-| Column | SQLite type | Description |
-| --- | --- | --- |
-| `source_id` | `INTEGER` | Gaia source identifier; primary key |
-| `ra` | `REAL` | Right ascension in degrees |
-| `dec` | `REAL` | Declination in degrees |
-| `phot_g_mean_mag` | `REAL` | Gaia G-band mean magnitude |
+## Gaia data utilities
 
-An index is created on `phot_g_mean_mag`. If the output database already exists, the script replaces its `gaia_sources` rows with the CSV contents. The input CSV path must not contain spaces because of the SQLite CLI import command.
-
-For example, to convert the CSV created by the downloader:
+Download Gaia DR3 source IDs, coordinates, and G-band magnitudes up to a magnitude limit:
 
 ```sh
-lua astrodiagramma/download_gaia.lua 14.0 bright_sources.csv
-lua astrodiagramma/csv_to_sqlite.lua bright_sources.csv bright_sources.db
+lua astrodiagramma/utils/download_gaia.lua 14.0 bright_sources.csv
 ```
 
-Query the resulting database with SQLite:
+The script submits an asynchronous query to the ESA Gaia Archive, waits for completion, and writes a CSV. The archive may limit the number of returned rows.
+
+Import the CSV into a SQLite database:
+
+```sh
+lua astrodiagramma/utils/csv_to_sqlite.lua bright_sources.csv bright_sources.db
+```
+
+The resulting database has a `gaia_sources` table with columns `source_id` (`INTEGER PRIMARY KEY`), `ra` (`REAL`), `dec` (`REAL`), and `phot_g_mean_mag` (`REAL`). It also creates an index on magnitude. Re-running the importer replaces the table rows with the CSV contents. The import utility requires an input CSV path without spaces.
+
+For example, inspect the brightest rows with:
 
 ```sh
 sqlite3 bright_sources.db \
   'SELECT source_id, ra, dec, phot_g_mean_mag FROM gaia_sources ORDER BY phot_g_mean_mag LIMIT 10;'
 ```
 
-## Lua modules
+## Project layout
 
-- `astrodiagramma/astrocoord.lua` — coordinate object and angular coordinate conversion.
-- `astrodiagramma/units.lua` — angle and time unit conversion helpers.
-- `astrodiagramma/calculations.lua` — angle, interpolation, and related calculation helpers.
-- `astrodiagramma/constants.lua` — physical and astronomical constants.
-- `astrodiagramma/io.lua` — table formatting helper.
+- `astrodiagramma/astrodiagramma.lua` — command-line application entry point.
+- `astrodiagramma/units.lua` and `astrodiagramma/calculations.lua` — unit conversions and astronomy calculations.
+- `astrodiagramma/ouranos.lua`, `astrodiagramma/somatouranos.lua`, and `astrodiagramma/zenith.lua` — sky, body, and zenith models.
+- `astrodiagramma/gaiadb.lua` — SQLite database wrapper using `lsqlite3`.
+- `astrodiagramma/cio.lua` — JSON and file I/O helpers using `dkjson`.
+- `astrodiagramma/configs/` — application and user settings.
+- `astrodiagramma/database/` — local Gaia database.
+- `astrodiagramma/utils/` — Gaia download and CSV import scripts.
+- `notes/` — learning examples and chapter notes.
 
-The `notes/` directory contains learning examples and chapter notes.
+## To do
 
-## TO-DO
-- [ ] Create a FITS viewer that does the following: Loads images quickly, loads next file without closing file, remembers sessions.
+- Create a FITS viewer that loads images quickly, switches files without reopening the application, and remembers sessions.
 
 ## Gaia data acknowledgment
 
@@ -76,4 +80,4 @@ If you use Gaia DR3 data in research, acknowledge it as follows:
 
 > This work has made use of data from the European Space Agency (ESA) mission Gaia (https://www.cosmos.esa.int/gaia), processed by the Gaia Data Processing and Analysis Consortium (DPAC, https://www.cosmos.esa.int/web/gaia/dpac/consortium). Funding for the DPAC has been provided by national institutions, in particular the institutions participating in the Gaia Multilateral Agreement.
 
-Research using Gaia DR3 should also cite the Gaia mission paper and the Gaia DR3 release paper. See the [official Gaia DR3 credit and citation instructions](https://gea.esac.esa.int/archive/documentation/GDR3/Miscellaneous/sec_credit_and_citation_instructions/) for the recommended citations and additional references relevant to your work.
+Research using Gaia DR3 should also cite the Gaia mission paper and the Gaia DR3 release paper. See the [official Gaia DR3 credit and citation instructions](https://gea.esac.esa.int/archive/documentation/GDR3/Miscellaneous/sec_credit_and_citation_instructions/) for recommended citations and additional references relevant to your work.
