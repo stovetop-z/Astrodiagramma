@@ -1,13 +1,14 @@
 local u = require("astrodiagramma.units")
 local math = require("math")
-local astrocoord = {}
-astrocoord.__index = astrocoord
+local somatouranos = {}
+somatouranos.__index = somatouranos
 
-function astrocoord:new(ra, decl, units, name, distance, use_db)
+function somatouranos:new(ra, decl, units, name, distance)
     -- expects distance in kpc
-    local self = setmetatable({}, astrocoord)
+    local self = setmetatable({}, somatouranos)
     self.units = "deg"
     self.name = (name == nil) and "Unknown Object" or name
+    
     self.distance = distance
     self.ra = {}
     self.decl = {}
@@ -34,6 +35,8 @@ function astrocoord:new(ra, decl, units, name, distance, use_db)
     return self
 end
 
-function astrocoord:separation(body)
+function somatouranos:separation(body)
     return {body.ra - self.ra, body.decl - self.decl}
 end
+
+return somatouranos

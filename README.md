@@ -67,6 +67,9 @@ sqlite3 bright_sources.db \
 
 The `notes/` directory contains learning examples and chapter notes.
 
+## TO-DO
+- [ ] Create a FITS viewer that does the following: Loads images quickly, loads next file without closing file, remembers sessions.
+
 ## Gaia data acknowledgment
 
 If you use Gaia DR3 data in research, acknowledge it as follows:

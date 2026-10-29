@@ -1,0 +1,10 @@
+{
+    "exists": false,
+    "userName": "UNKNOWN",
+    "userCoordinates": {
+        "latitude": 0.0,
+        "longitude": 0.0
+    },
+    "database": "database/gaia.db",
+    "fovRadius": 45.0
+}

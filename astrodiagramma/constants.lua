@@ -37,5 +37,6 @@ constants.R_sun = 695700000 -- m Nominal solar radius
 constants.au = 1.49597871e+11 -- m Astronomical Unit
 constants.kpc = 3.08567758e+19 -- m Kiloparsec
 constants.pc = 3.08567758e+16 -- m Parsec
+constants.JD = 2451545.0 -- Julian time
 
 return constants
