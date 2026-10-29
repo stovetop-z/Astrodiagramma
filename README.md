@@ -25,10 +25,19 @@ luarocks install lsqlite3 SQLITE_DIR=/opt/homebrew/opt/sqlite
 
 ## Run the application
 
+To run the Limekit interface with the local Limer installation:
+
+```sh
+lua run.lua
+```
+
+The launcher expects Limer at `Limer/` in the project root and starts the
+Limekit project from `scripts/main.lua`.
+
 From the project root:
 
 ```sh
-lua astrodiagramma/astrodiagramma.lua
+lua astrodiagramma/app.lua
 ```
 
 The current application is an interactive prototype. It loads settings from `astrodiagramma/configs/`, prompts for initial user and location settings when `exists` is false, and accepts `q` to quit. Automatic location lookup uses LuaSocket and an IP geolocation service. Configuration and database paths are currently resolved relative to the project root.
@@ -60,7 +69,7 @@ sqlite3 bright_sources.db \
 
 ## Project layout
 
-- `astrodiagramma/astrodiagramma.lua` — command-line application entry point.
+- `astrodiagramma/app.lua` — command-line application entry point.
 - `astrodiagramma/units.lua` and `astrodiagramma/calculations.lua` — unit conversions and astronomy calculations.
 - `astrodiagramma/ouranos.lua`, `astrodiagramma/somatouranos.lua`, and `astrodiagramma/zenith.lua` — sky, body, and zenith models.
 - `astrodiagramma/gaiadb.lua` — SQLite database wrapper using `lsqlite3`.

@@ -2,62 +2,6 @@ local math = require("math")
 
 local calculations = {}
 
-function calculations.reduce_deg_angle(W)
-    return W % 360
-end
-
-function calculations.hours_to_deg(x)
-    return x * 15
-end
-
-function calculations.subhour_to_deg(x, grad)
-    return (x / (60^grad)) * 15
-end
-
-function calculations.right_ascension_to_deg(x) -- Assuming a string value of: hour:minute:second
-    local degrees = 0.0
-    local index = 0
-    for val in string.gmatch(x, "(%d+)") do
-        print(val)
-        if index == 0 then
-            degrees = calculations.hours_to_deg(val)
-        else
-            degrees = degrees + calculations.subhour_to_deg(val, index)
-        end
-
-        index = index + 1
-    end
-
-    return degrees
-end
-
-function calculations.right_ascension_to_deg(h, m, s)
-    return calculations.hour_to_deg(h) + calculations.subhour_to_deg(m, 1) + calculations.subhour_to_deg(s, 2)
-end
-
-function calculations.deg_min_sec_to_deg(x) -- e.g. x = 21:44:7
-    local degrees = 0.0
-    local multiplier = (string.sub(x, 1, 1) == '-') and (-1.0) or 1.0
-    local index = 0
-    for val in string.gmatch(x, "(%d+)") do
-        if index == 0 then
-            degrees = tonumber(val) * multiplier
-        else
-            degrees = degrees + calculations.subhour_to_deg(val, index) * multiplier
-        end
-
-        index = index + 1
-    end
-
-    print(degrees)
-    return degrees
-end
-
-function calculations.deg_min_sec_to_deg(d, m, s)
-    local multiplier = (d < 0) and -1.0 or 1.0
-    return d + calculations.subhour_to_deg(m, 1) * multiplier + calculations.subhour_to_deg(s, 2) * multiplier
-end
-
 function calculations.interpolation_of_y(y, differences, n)
     local a = differences.a
     local b = differences.b

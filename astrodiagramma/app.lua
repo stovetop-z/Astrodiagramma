@@ -57,9 +57,10 @@ local function landing()
 end
 
 local function main()
-
     print("Welcome to Astrodiagramma.")
     landing()
+
+    -- Set the zenith given the current UTC
     fov:set_zenith()
     while true do
         io.flush()
@@ -68,6 +69,8 @@ local function main()
         if com == "q" then
             break
         end
+
+        
     end
 
     if config.debug == false then
