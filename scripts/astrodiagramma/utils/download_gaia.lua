@@ -1,6 +1,6 @@
 local magnitude = tonumber(arg[1])
 if not magnitude or magnitude <= 0 then
-    io.stderr:write("Usage: lua astrodiagramma/download_gaia.lua <max_g_magnitude> [output.csv]\n")
+    io.stderr:write("Usage: lua scripts/astrodiagramma/utils/download_gaia.lua <max_g_magnitude> [output.csv]\n")
     os.exit(2)
 end
 
@@ -20,13 +20,16 @@ local function run(command)
     return result
 end
 
-local query = "SELECT source_id, ra, dec, phot_g_mean_mag FROM gaiadr3.gaia_source WHERE phot_g_mean_mag <= " .. tostring(magnitude)
+-- Match the columns expected by csv_to_sqlite.lua.
+local query = "SELECT source_id, designation, ra, dec, phot_g_mean_mag FROM gaiadr3.gaia_source WHERE phot_g_mean_mag <= " .. tostring(magnitude)
+
 local submit = table.concat({
     "curl -sS -D - -o /dev/null -X POST",
     "--data-urlencode 'REQUEST=doQuery'",
     "--data-urlencode 'LANG=ADQL'",
     "--data-urlencode 'FORMAT=csv'",
     "--data-urlencode 'PHASE=RUN'",
+    "--data-urlencode 'EXECUTIONDURATION=3600'",
     "--data-urlencode " .. shell_quote("QUERY=" .. query),
     shell_quote(endpoint),
 }, " ")
@@ -38,11 +41,13 @@ job_url = job_url:gsub("%s+$", "")
 print("Submitted Gaia query: " .. job_url)
 
 while true do
-    local status = run("curl -sS " .. shell_quote(job_url))
+    local status = run("curl -fLsS " .. shell_quote(job_url))
     local phase = status:match("<uws:phase>(.-)</uws:phase>")
     if phase == "COMPLETED" then break end
     if phase == "ERROR" or phase == "ABORTED" then
-        error("Gaia job finished with phase " .. phase .. ":\n" .. status)
+        local message = status:match("<uws:message><!%[CDATA%[(.-)%]%]></uws:message>")
+        error("Gaia job finished with phase " .. phase .. ": " .. (message or "see " .. job_url)
+            .. "\nThe archive may impose execution-time and result limits; an aborted result is incomplete.")
     end
     if not phase then error("Could not read job phase:\n" .. status) end
     print("Gaia job phase: " .. phase)
@@ -52,3 +57,4 @@ end
 local results_url = job_url .. "/results/result"
 run("curl -fLsS " .. shell_quote(results_url) .. " -o " .. shell_quote(output))
 print("Saved Gaia CSV to " .. output)
+print("Warning: Gaia may limit the number of rows returned; this download is not verified complete.")

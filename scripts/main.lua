@@ -1,3 +1,4 @@
+local app = require("astrodiagramma.app")
 local ui = require("limekit.ui")
 local fs = require("limekit.fs") -- Reading and writing files, folders, and json
 local res = require("limekit.res") -- Project images, scripts, and misc
@@ -10,6 +11,7 @@ local window = ui.Window{
 }
 local layout = ui.VLayout()
 layout:addChild(ui.Label("Astrodiagramma"))
+layout:addChild(ui.TreeView())
 
 window:setLayout(layout)
 window:show()

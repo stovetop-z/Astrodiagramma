@@ -3,11 +3,11 @@ local math = require("math")
 local somatouranos = {}
 somatouranos.__index = somatouranos
 
-function somatouranos:new(ra, decl, units, name, distance)
+function somatouranos:new(ra, decl, units, designation, distance)
     -- expects distance in kpc
     local self = setmetatable({}, somatouranos)
     self.units = "deg"
-    self.name = (name == nil) and "Unknown Object" or name
+    self.designation = (designation == nil) and "Unknown Object" or designation
     
     self.distance = distance
     self.ra = {}
@@ -29,7 +29,7 @@ function somatouranos:new(ra, decl, units, name, distance)
         error("Unsupported units. List of supported units:\n- deg or degrees\n- hms\n- dms\n-rad or radians")
     end
 
-    self._description = self.name .. " at <ra, decl> = <" .. self.ra .. ", " .. self.decl  .. ">" .. ", units = " .. self.units
+    self._description = self.designation .. " at <ra, decl> = <" .. self.ra .. ", " .. self.decl  .. ">" .. ", units = " .. self.units
 
     print(self._description)
     return self

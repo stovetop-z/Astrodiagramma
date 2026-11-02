@@ -14,7 +14,7 @@ function ouranos:new()
 end
 
 function ouranos:add_soma(soma)
-    if(self.somatouranoi[soma.name] == nil) then
+    if(self.somatouranoi[soma.designation] == nil) then
         table.insert(self.somatouranoi, soma)
     end
 end
@@ -57,6 +57,8 @@ function ouranos:auto_set_reference_coordinates()
     else
         print("Failed to get location. HTTP code: " .. tostring(code) .. "\nTry manually entering coordinates.")
     end
+
+    self:set_zenith()
 end
 
 function ouranos:scan_within_radius()

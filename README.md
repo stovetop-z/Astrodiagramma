@@ -34,6 +34,18 @@ lua run.lua
 The launcher expects Limer at `Limer/` in the project root and starts the
 Limekit project from `scripts/main.lua`.
 
+Limekit's bundled runtime uses Lua 5.4, independently of the `lua` command
+used to start the launcher. Install the modules for Lua 5.4 as well; native
+modules compiled for Lua 5.5 cannot be loaded into the Lua 5.4 runtime. On
+Homebrew, for example:
+
+```sh
+brew install lua@5.4
+luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 --tree=.luarocks install dkjson
+luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 --tree=.luarocks install luasocket
+luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 --tree=.luarocks install lsqlite3 SQLITE_DIR=/opt/homebrew/opt/sqlite
+```
+
 From the project root:
 
 ```sh
@@ -78,6 +90,9 @@ sqlite3 bright_sources.db \
 - `astrodiagramma/database/` — local Gaia database.
 - `astrodiagramma/utils/` — Gaia download and CSV import scripts.
 - `notes/` — learning examples and chapter notes.
+
+## Ignore for now, but may become something later
+There is now raylib code to show the stars given a telescope data. This was partially generated with AI, so I don't trust it yet and I have not connected it yet with a client. The plan is to use a simple TCP connection so the Lua app acts like the "frontend" and the raylib app acts like the a UI view "backend".
 
 ## To do
 
